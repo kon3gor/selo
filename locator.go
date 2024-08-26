@@ -1,11 +1,11 @@
 package selo
 
 type Locator interface {
-	set(int, anyAccessor)
+	set(any, anyAccessor)
 }
 
 type locator struct {
-	accessors map[int]Accessor[any]
+	accessors map[any]Accessor[any]
 }
 
 var _ Locator = &locator{}
@@ -14,11 +14,11 @@ var l Locator
 
 func Init(opts ...Option) {
 	l = &locator{
-		accessors: make(map[int]Accessor[any]),
+		accessors: make(map[any]Accessor[any]),
 	}
 }
 
-func (l *locator) set(k int, a anyAccessor) {
+func (l *locator) set(k any, a anyAccessor) {
 	l.accessors[k] = a
 }
 
@@ -40,9 +40,9 @@ func Unique[T any](key int, f Factory[T], opts ...UniqeOption) {
 		opt(s)
 	}
 
-	l.set(key, newSingletonAccessor(f))
+	l.set((*T)(nil), newSingletonAccessor(f))
 }
 
 func Get[T any](key int) T {
-	return l.(*locator).accessors[key].Get().(T)
+	return l.(*locator).accessors[(*T)(nil)].Get().(T)
 }

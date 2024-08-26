@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"unsafe"
 
 	"github.com/kon3gor/selo"
 	sk "github.com/kon3gor/selo/examples/simple/selokeys"
@@ -39,3 +40,4 @@ func main() {
 
 	fmt.Println(v.client.msg)
 }
+
