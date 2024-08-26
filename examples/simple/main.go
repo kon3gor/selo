@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"unsafe"
 
 	"github.com/kon3gor/selo"
-	sk "github.com/kon3gor/selo/examples/simple/selokeys"
 )
 
-//go:generate selogen -type=MyClient
 type MyClient struct {
 	msg string
 }
 
-//go:generate selogen -type=MyClient2
 type MyClient2 struct {
 	client *MyClient
 }
@@ -26,18 +22,27 @@ func NewMyClient() *MyClient {
 
 func NewMyClient2() *MyClient2 {
 	return &MyClient2{
-		client: selo.Get[*MyClient](sk.MyClient),
+		client: selo.Get[*MyClient](),
 	}
 }
 
 func main() {
-	selo.Init()
+	selo.Init(selo.WithDebug(true))
 
-	selo.Unique(sk.MyClient, NewMyClient)
-	selo.Unique(sk.MyClient2, NewMyClient2, selo.WithLazy(true))
+	selo.
+		Unique[*MyClient]().
+		SetLazy(true).
+		SetTag("client").
+		SetFactory(NewMyClient).
+		Record()
 
-	v := selo.Get[*MyClient2](sk.MyClient2)
+	selo.
+		Unique[*MyClient2]().
+		SetLazy(true).
+		SetFactory(NewMyClient2).
+		Record()
+
+	v := selo.Get[*MyClient2]()
 
 	fmt.Println(v.client.msg)
 }
-
