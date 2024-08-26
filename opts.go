@@ -1,13 +1,13 @@
 package selo
 
-type LocatorSettings struct {
+type locatorSettings struct {
 	debug bool
 }
 
-type Option func(*LocatorSettings)
+type Option func(*locatorSettings)
 
 func WithDebug(v bool) Option {
-	return func(ls *LocatorSettings) {
+	return func(ls *locatorSettings) {
 		ls.debug = v
 	}
 }
