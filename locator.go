@@ -7,6 +7,7 @@ type Locator interface {
 
 type locator struct {
 	accessors map[any]Accessor
+	log       Logger
 }
 
 var _ Locator = &locator{}
@@ -22,6 +23,7 @@ func Init(opts ...Option) {
 
 	l = &locator{
 		accessors: make(map[any]Accessor),
+		log:       s.logger,
 	}
 }
 
