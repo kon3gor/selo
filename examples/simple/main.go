@@ -20,6 +20,12 @@ func NewMyClient() *MyClient {
 	}
 }
 
+func NewMyClientOther() *MyClient {
+	return &MyClient{
+		msg: "bye world",
+	}
+}
+
 func NewMyClient2() *MyClient2 {
 	return &MyClient2{
 		client: selo.Get[*MyClient](),
@@ -32,17 +38,20 @@ func main() {
 	selo.
 		Unique[*MyClient]().
 		SetLazy(true).
-		SetTag("client").
+		SetTag("client1").
 		SetFactory(NewMyClient).
 		Record()
 
 	selo.
-		Unique[*MyClient2]().
+		Unique[*MyClient]().
 		SetLazy(true).
-		SetFactory(NewMyClient2).
+		SetTag("client2").
+		SetFactory(NewMyClientOther).
 		Record()
 
-	v := selo.Get[*MyClient2]()
+	v1 := selo.GetTagged[*MyClient]("client1")
+	v2 := selo.GetTagged[*MyClient]("client2")
 
-	fmt.Println(v.client.msg)
+	fmt.Println(v1.msg)
+	fmt.Println(v2.msg)
 }

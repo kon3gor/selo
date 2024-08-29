@@ -41,5 +41,10 @@ func (b *uniqueAccessorBuilder[T]) Record() {
 		a.v = b.f()
 	}
 
-	l.set((*T)(nil), a)
+	if b.tag != "" {
+		l.set(newTaggedKey[T](b.tag), a)
+	} else {
+		l.set((*T)(nil), a)
+	}
+
 }

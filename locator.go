@@ -2,6 +2,7 @@ package selo
 
 type Locator interface {
 	set(any, Accessor)
+	get(any) Accessor
 }
 
 type locator struct {
@@ -28,8 +29,17 @@ func (l *locator) set(k any, a Accessor) {
 	l.accessors[k] = a
 }
 
+func (l *locator) get(k any) Accessor {
+	return l.accessors[k]
+}
+
 func Get[T any]() T {
-	return l.(*locator).accessors[(*T)(nil)].Get().(T)
+	return l.get((*T)(nil)).Get().(T)
+}
+
+func GetTagged[T any](tag string) T {
+	key := newTaggedKey[T](tag)
+	return l.get(key).Get().(T)
 }
 
 func Unique[T any]() AccessorBuilder[T] {
