@@ -2,30 +2,20 @@ package benchmarks
 
 import "testing"
 
-type VP = string
-type KP = any
-type MP = map[KP]VP
-
 func BenchmarkPointerKeys(b *testing.B) {
-	type SimpleStruct struct{}
-	m := make(MP)
+	type Key struct {
+		buffer [256]byte
+	}
+	store := NewStore[any]()
 	b.Run("set", func(b *testing.B) {
 		for range b.N {
-			setPointer[SimpleStruct](m, "hello world")
+			store.Put((*Key)(nil))
 		}
 	})
 
 	b.Run("get", func(b *testing.B) {
 		for range b.N {
-			_ = getPointer[SimpleStruct](m)
+			_ = store.Get((*Key)(nil))
 		}
 	})
-}
-
-func setPointer[T any](m MP, v VP) {
-	m[(*T)(nil)] = v
-}
-
-func getPointer[T any](m MP) VP {
-	return m[(*T)(nil)]
 }
